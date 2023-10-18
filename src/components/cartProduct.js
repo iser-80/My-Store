@@ -1,9 +1,31 @@
+import axios from 'axios';
 import React, {useState} from 'react'
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import {FaTrash} from 'react-icons/fa'
 
-const CartProduct = () => {
-    const [qty, setQty] = useState(10); // Initialize the quantity to 1 by default
+const CartProduct = (props) => {
+    let inititalQty = props.cartProduct.quantity
+    const [qty, setQty] = useState(inititalQty); // Initialize the quantity to 1 by default
+    const product = props.cartProduct.product
+    const cartId = props.cartId
+
+    function onQtyChange(e){
+        if(e.target.value < 0){
+          return 0
+        }
+        else if(e.target.value > 20){
+          return product.quantity
+        }
+        else{
+          setQty(e.target.value)
+        }
+      }
+
+      async function deleteCartProduct () {
+        await axios.delete(`http://localhost:5000/cart/${cartId}`)
+        props.refreshCart(); // Call the refreshCart function
+      }
+      
 
   return (
     <Row className='my-4 d-flex justify-content-center align-items-center' >
@@ -11,31 +33,24 @@ const CartProduct = () => {
             <Image src="https://i.pinimg.com/564x/8c/db/e1/8cdbe123010c380e20f264a8fdd57938.jpg" fluid rounded />
         </Col>
         <Col xs={3}>
-            <Row><h3>Product Title</h3></Row>
+            <Row><h3>{product.title}</h3></Row>
             <Row>
-            <p>Webdesign UI shopping cart designed by Koi Thunyarat.</p>
+            <p>{product.description.substring(1, 50)}...</p>
             </Row>
         </Col>
         <Col xs={2}>
-            <Form.Control
-                as='select'
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value))} // Update quantity when selected
-            >
-                {[...Array(qty).keys()].map((x)=>(
-                    <option key={x+1} value={x+1}>
-                        {x + 1}
-                    </option>
-                ))}
-            </Form.Control>              
+            <Form.Control type="number" value={qty} onChange={onQtyChange} />
+            
         </Col>
         <Col xs={2}>
-            <h2>$120</h2>
+            <h2>${product.price * qty}</h2>
         </Col>
         <Col xs={2}>
-            <FaTrash />
+            <Button onClick={deleteCartProduct}><FaTrash/></Button>
+            
         </Col>
-        </Row>
+    </Row>
+        
   )
 }
 

@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
-const CartSummary = () => {
+const CartSummary = (props) => {
+  //const [cart, setCart] = useState([])
+  const cart = props.cart
+  console.log(cart)
+
   return (
     <Container className='m-2  border border-gray rounded p-4' >
     <Row>
@@ -11,34 +15,17 @@ const CartSummary = () => {
       <p style={{color: '#FFCD4B', textAlign: 'center'}}>Select your orders and get them now!</p>
     </Row>
 
-    <Row className='mt-3'>
-      <Col xs={8}>
-        <p style={{fontSize: '18px', marginLeft: '20px'}}>Product1 * 3</p>
-      </Col>
-      <Col xs={4}>
-        <p style={{fontSize: '18px'}}>$229</p>
-      </Col>
-    </Row>
-    <hr className='my-1' style={{ borderColor: 'gray' }}/>
+    {cart.map((item) => (
+      <Row className='mt-3'>
+        <Col xs={8}>
+          <p style={{fontSize: '18px', marginLeft: '20px'}}>{item.product.title.substring(0, 10)}</p>
+        </Col>
+        <Col xs={4}>
+          <p style={{fontSize: '18px'}}>$ {item.product.price}</p>
+        </Col>
+      </Row>
+    ))}
 
-    <Row className='mt-3'>
-      <Col xs={8}>
-        <p style={{fontSize: '18px', marginLeft: '20px'}}>Product1 * 3</p>
-      </Col>
-      <Col xs={4}>
-        <p style={{fontSize: '18px'}}>$229</p>
-      </Col>
-    </Row>
-    <hr className='my-1' style={{ borderColor: 'gray' }}/>
-
-    <Row className='mt-3'>
-      <Col xs={8}>
-        <p style={{fontSize: '18px', marginLeft: '20px'}}>Product1 * 3</p>
-      </Col>
-      <Col xs={4}>
-        <p style={{fontSize: '18px'}}>$229</p>
-      </Col>
-    </Row>
     
     <Row className='mt-4'>
       <Col xs={8}>

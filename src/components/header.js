@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Col, Button, Row } from 'react-bootstrap';
+import Badge from 'react-bootstrap/Badge';
 import {LinkContainer} from 'react-router-bootstrap'
 import { Link } from 'react-router-dom';
 import {FaShoppingCart, FaShoppingBag } from 'react-icons/fa'
@@ -20,7 +21,14 @@ const Header = () => {
             <Nav.Link href="/addProduct">Add Product</Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Row>
+        <Row className='d-flex align-items-center'>
+          <Col xs='auto'>
+            <LinkContainer to={'/cart'}>
+              <Nav.Link>
+                <FaShoppingBag className='fs-4'/> <Badge bg="danger">3</Badge>
+              </Nav.Link>
+            </LinkContainer>
+          </Col>
           <Col xs="auto">
             <LinkContainer to={'/login'}>
               <Nav.Link>

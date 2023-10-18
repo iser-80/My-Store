@@ -1,7 +1,7 @@
 const express = require('express')
+const mongoose = require('mongoose')
 const cors = require('cors')
-const User = require('./mongo')
-const Product = require('./mongo')
+const {User, Product, Cart} = require('./mongo')
 const { useParams } = require('react-router-dom')
 
 const app = express()
@@ -55,6 +55,7 @@ app.post('/login', async(req, res)=>{
             res.status(404).json('notFound')
         }
     } catch (error) {
+        
         res.status(500).json("Internal Server Error");
     }
 })
@@ -65,6 +66,52 @@ app.post('/addProduct', async (req, res) => {
     res.status(202).json({message: 'new Product has been added'})
 });
   
+app.get('/cart/products', async (req, res) => {
+    try {
+        const products = await Cart.find().populate('product', 'title description price');
+        if(products){
+            res.status(200).json(products)
+        }
+        else{
+            res.status(404).send('sorry no products found in the cart')
+        }
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+app.post('/cart/addProduct', async (req, res) => {
+    try {
+      const productId = req.body.productId; // Get the product ID from the request body
+      const product = await Product.findById(productId)
+      const cartProduct = new Cart({ product: product, quantity: 1 }); // Create a new cart item
+      await cartProduct.save();
+      console.log('New product added to the cart:', cartProduct);
+      res.status(202).json({ message: 'New product has been added to the cart' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  });
+  
+  app.delete('/cart/:cartId', async (req, res) => {
+    try {
+        const cartId = req.params.cartId;
+        const result = await Cart.deleteOne({ _id: cartId }); // Use _id to find the cart item
+        if (result.deletedCount > 0) {
+            res.status(204).send('Cart item deleted successfully');
+        } else {
+            res.status(404).send('Cart item not found');
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
+
 
 
 app.listen(5000, console.log('port 5000 connected'))

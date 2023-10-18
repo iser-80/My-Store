@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const AboutProduct = () => {
   const [product, setProduct] = useState({})
+  const [qty, setQty] = useState(1)
 
   const productId = useParams().productId
   console.log(productId)
@@ -20,6 +21,20 @@ const AboutProduct = () => {
       console.log(err)
     })
   }, [productId])
+
+  function onQtyChange(e){
+    if(e.target.value < 0){
+      return 0
+    }
+    else if(e.target.value > product.quantity){
+      return product.quantity
+      setQty(product.quantity)
+    }
+    else{
+      setQty(e.target.value)
+    }
+
+  }
 
   return (
     <>
@@ -46,13 +61,13 @@ const AboutProduct = () => {
             <Row style={{marginTop: '40px'}}>
                 <Col xs={4}><h2>Quantity : </h2></Col>
                 <Col xs={6} className='d-flex justify-content-center'>
-                    <Form.Control type="number" />
+                    <Form.Control type="number" value={qty} onChange={onQtyChange} />
                 </Col>
             </Row>
             <Row className='mt-4'>
                 <Col xs={4}><h2>Price : </h2></Col>
                 <Col xs={6} className='d-flex justify-content-center'>
-                    <h2>$ {product.price}</h2>
+                    <h2>$ {product.price * qty} </h2>
                 </Col>
             </Row>
             <Row style={{marginTop: '30px'}}>

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -6,6 +7,13 @@ import {LinkContainer} from 'react-router-bootstrap'
 
 const Product = (props) => {
 
+  async function addToCart () {
+    try {
+      await axios.post('http://localhost:5000/cart/addProduct', { productId: props.id })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <Card style={{ width: '16rem' }}>
@@ -21,7 +29,7 @@ const Product = (props) => {
             </Nav.Link>
           </LinkContainer>
           <Card.Text>{props.description.substring(1, 70)} ...</Card.Text>
-          <Button variant="primary">Add to Cart</Button>
+          <Button type='submit' onClick={addToCart} variant="primary">Add to Cart</Button>
         </Card.Body>
     </Card>
   )
