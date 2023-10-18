@@ -1,6 +1,9 @@
 import axios from 'axios';
 import React, {useState} from 'react'
 import {Button, Container, Form} from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
+import Nav from 'react-bootstrap/Nav';
+import {FaLessThan } from 'react-icons/fa'
 
 const Register = () => {
   const [name, setName] = useState()
@@ -24,7 +27,7 @@ const Register = () => {
   }
 
   return (
-    <Container className='mt-4' style={{width: '600px'}}>
+    <Container style={{width: '600px', marginTop: '100px'}}>
       <Form className='mt-4'>
         <h1>Register</h1>
         <Form.Group className="mb-3" controlId="formBasicusername">
@@ -45,7 +48,12 @@ const Register = () => {
         <Button onClick={handleOnRegister} variant="primary" type="submit">
             Register
         </Button>
-        </Form>
+      </Form>
+      <LinkContainer style={{color: 'gray', marginTop: '40px'}} to={'/'}>
+        <Nav.Link>
+          <FaLessThan/> Go Home
+        </Nav.Link>
+      </LinkContainer>
     </Container>
   )
 }
