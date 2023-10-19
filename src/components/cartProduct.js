@@ -18,6 +18,7 @@ const CartProduct = (props) => {
         }
         else{
           setQty(e.target.value)
+          props.updateQty(qty)
         }
       }
 

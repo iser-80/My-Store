@@ -4,7 +4,8 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 const CartSummary = (props) => {
   //const [cart, setCart] = useState([])
   const cart = props.cart
-  console.log(cart)
+  const qty = props.qty;
+  console.log(qty)
 
   return (
     <Container className='m-2  border border-gray rounded p-4' >
