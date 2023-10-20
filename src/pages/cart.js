@@ -60,7 +60,7 @@ const Cart = () => {
                 <p style={{fontSize: '18px', marginLeft: '20px'}}>{item.product.title.substring(0, 10)}</p>
               </Col>
               <Col xs={4}>
-                <p style={{fontSize: '18px'}}>$ {item.product.price * (qty)}</p>
+                <p style={{fontSize: '18px'}}>$ {item.product.price}</p>
               </Col>
             </Row>
           ))}

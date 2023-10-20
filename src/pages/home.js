@@ -4,16 +4,19 @@ import Header from '../components/header';
 import Product from '../components/product';
 import { Row, Container, Col } from 'react-bootstrap';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 
 const Home = () => {
     const [products, setProduts] = useState([])
-
+    const token = localStorage.getItem('token')
+    
     useEffect(()=>{
         axios.get('http://localhost:5000/data').then((res)=>{
         setProduts(res.data)
     })
     }, [])
+
 
   return (
     <>

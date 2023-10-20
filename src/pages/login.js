@@ -4,19 +4,27 @@ import {Button, Container, Form} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import {FaLessThan } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
 
   async function handleOnLogin(e){
     e.preventDefault()
 
     try {
       await axios.post('http://localhost:5000/login', {email, password}).then((res) => {
-        console.log(res.data)
-        if(res.data === 'found'){
+        const token = res.data.token
+        if(token){
           console.log('login success')
+          localStorage.setItem('token', token);
+          setEmail('')
+          setPassword('')
+          navigate('/')
         }else{
           console.log('login denied')
         }
