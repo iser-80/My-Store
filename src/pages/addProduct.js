@@ -14,7 +14,12 @@ const AddProduct = () => {
     e.preventDefault()
 
     try {
-      await axios.post('http://localhost:5000/addProduct', { title, description, price, quantity })
+      const token = localStorage.getItem('token'); // Retrieve the token from local storage
+        await axios.post('http://localhost:5000/addProduct', { title, description, price, quantity }, {
+            headers: {
+                'Authorization': token, // Include the token in the headers
+            },
+        });
       console.log('product sent')
 
       setTitle('')

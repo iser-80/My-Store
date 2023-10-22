@@ -22,11 +22,24 @@ const CartProduct = (props) => {
         }
       }
 
-      async function deleteCartProduct () {
-        await axios.delete(`http://localhost:5000/cart/${cartId}`)
-        props.refreshCart(); // Call the refreshCart function
-      }
+      async function deleteCartProduct(productId) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.delete('http://localhost:5000/cart/removeProduct', {
+            headers: { Authorization: token },
+            data: { productId: productId },
+          });
       
+          if (response.status === 204) {
+            props.refreshCart(); // Removed successfully
+          } else {
+            console.log('Something went wrong on product deletion');
+          }
+        } catch (error) {
+          console.error('Error removing product from the cart:', error);
+        }
+      }
+            
 
   return (
     <Row className='my-4 d-flex justify-content-center align-items-center' >
@@ -47,7 +60,7 @@ const CartProduct = (props) => {
             <h2>${product.price * qty}</h2>
         </Col>
         <Col xs={2}>
-            <Button onClick={deleteCartProduct}><FaTrash/></Button>
+            <Button onClick={()=>deleteCartProduct(product._id)}><FaTrash/></Button>
             
         </Col>
     </Row>

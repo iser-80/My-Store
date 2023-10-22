@@ -23,7 +23,16 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean,
         default: false   
-    }
+    },
+    cart: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+            },
+            quantity: Number,
+        }
+    ]
 })
 
 const productSchema = new mongoose.Schema({
@@ -45,21 +54,21 @@ const productSchema = new mongoose.Schema({
     },
 })
 
-const cartSchema = new mongoose.Schema({
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    }, 
-    quantity: {
-        type: Number,
-        default: 1
-    }
-})
+// const cartSchema = new mongoose.Schema({
+//     product: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: 'Product',
+//         required: true
+//     }, 
+//     quantity: {
+//         type: Number,
+//         default: 1
+//     }
+// })
 
 const User = mongoose.model('User', userSchema)
 const Product = mongoose.model('Product', productSchema)
-const Cart = mongoose.model('Cart', cartSchema)
+// const Cart = mongoose.model('Cart', cartSchema)
 
-module.exports = {User, Product, Cart}
+module.exports = {User, Product}
 

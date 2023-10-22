@@ -36,12 +36,13 @@ const Header = () => {
 
         <Navbar.Brand href="/" className='fs-4'><FaShoppingCart/> Electro-Shop</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        {user && 
+        { (user && user.isAdmin === true) &&
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/addProduct">Add Product</Nav.Link>
             </Nav>
           </Navbar.Collapse>
+          
         }
         <Row className='d-flex align-items-center'>
           {user ? 

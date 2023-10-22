@@ -10,16 +10,30 @@ import axios from 'axios';
 const Cart = () => {
   const [cart, setCart] = useState([])
   const [qty, setQty] = useState(0)
+
   useEffect(() => {
-    axios.get('http://localhost:5000/cart/products').then((res) => {
-      setCart(res.data)
-      console.log(res.data)
-    })
-  }, [])
+    const fetchCartProducts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/cart/products', {
+          headers: {
+            Authorization: token,
+          },
+        });
+        setCart(response.data.cart);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching cart products:', error);
+      }
+    };    
+  
+    fetchCartProducts();
+  }, []);
+  
 
   const refreshCart = () => {
     axios.get('http://localhost:5000/cart/products').then((res) => {
-      setCart(res.data);
+      setCart(res.data.cart);
     });
   };
 
@@ -39,9 +53,14 @@ const Cart = () => {
 
         {/* Cart Product */}
         <Col xs={8}>
-          {cart.map((item) => (
+        {Array.isArray(cart) && cart.length === 0  ? (
+          <p>you cart is empty</p>
+        ) : (
+          console.log('Cart:', cart),
+          cart.map((item) => (
             <CartProduct key={item._id} refreshCart={refreshCart} updateQty={updateQty} cartProduct={item} cartId={item._id} />
-          ))}
+          ))
+        )}
         </Col>
 
         {/* Cart Summary */}
