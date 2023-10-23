@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Col, Row, Button } from 'react-bootstrap';
+import { Container, Col, Row, Button, Toast } from 'react-bootstrap';
 import Nav from 'react-bootstrap/Nav';
 import {FaLessThan } from 'react-icons/fa'
 import CartProduct from '../components/cartProduct';
@@ -79,7 +79,7 @@ const Cart = () => {
                 <p style={{fontSize: '18px', marginLeft: '20px'}}>{item.product.title.substring(0, 10)}</p>
               </Col>
               <Col xs={4}>
-                <p style={{fontSize: '18px'}}>$ {item.product.price}</p>
+                <p style={{fontSize: '18px'}}>$ {item.product.price * item.quantity}</p>
               </Col>
             </Row>
           ))}

@@ -172,6 +172,7 @@
                     return {
                         product: product,
                         quantity: item.quantity,
+                        cart: item
                     };
                 })
             );
@@ -220,26 +221,48 @@
     
     app.delete('/cart/removeProduct', authentificateToken, async (req, res) => {
         try {
-          const user = req.user;
-          const productId = req.body.productId;
+          const user = await User.findById(req.user._id).exec();
+          const cartId = req.body.cartId;
       
-          // Find the index of the product in the user's cart
-          const productIndex = user.cart.findIndex((item) => item.product.equals(productId));
+          console.log('cart id : ', cartId)
+
+           // Find the cart item in the user's cart based on the cart item's ID
+            const cartItem = user.cart.find((item) => item._id.toString() === cartId);
+
+            if (cartItem) {
+                // Remove the cart item from the user's cart
+                user.cart.pull({ _id: cartItem._id });
+                // Save the updated user document to reflect the removal
+                await user.save();
+                return res.status(204).send('Cart item removed from the cart');
+            } else {
+                return res.status(404).json({ message: 'Cart item not found in the cart' });
+            }
       
-          if (productIndex !== -1) {
-            // Remove the product from the user's cart
-            user.cart.splice(productIndex, 1);
-            // Save the updated user document to reflect the removal
-            await user.save();
-            return res.status(204).send('Product removed from the cart');
-          } else {
-            return res.status(404).json({ message: 'Product not found in the cart' });
-          }
+          
         } catch (error) {
           console.error(error);
           return res.status(500).json({ message: 'Internal Server Error' });
         }
       });
+
+      app.patch('/cart/updateQty', authentificateToken, async (req, res) => {
+        const cartId = req.body.cartId
+        const newQuantity = req.body.newQty
+        const user = await User.findById(req.user._id).exec()
+    
+        const cart = user.cart.find((item) => item._id.toString() === cartId)
+        console.log('cart upt : ', cart)
+        if (cart) {
+            cart.quantity = newQuantity;
+            console.log('the new quantity : ', cart.quantity);
+            await user.save();
+            return res.status(200).json({ message: 'Cart item updated successfully' });
+        } else {
+            res.status(404).json({ message: 'Cart not found' });
+        }
+    });
+    
       
 
     app.delete('/cart/:cartId', async (req, res) => {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Container, Row, Col, Form, Image, Button } from 'react-bootstrap';
 import {FaTrash} from 'react-icons/fa'
 
@@ -7,33 +7,80 @@ const CartProduct = (props) => {
     let inititalQty = props.cartProduct.quantity
     const [qty, setQty] = useState(inititalQty); // Initialize the quantity to 1 by default
     const product = props.cartProduct.product
-    const cartId = props.cartId
+    const cartId = props.cartProduct.cart._id
+    console.log('about cart', props.cartProduct)
+    console.log(product.quantity)
 
-    function onQtyChange(e){
-        if(e.target.value < 0){
-          return 0
-        }
-        else if(e.target.value > 20){
-          return product.quantity
-        }
-        else{
-          setQty(e.target.value)
-          props.updateQty(qty)
+    const [user, setUser] = useState(null)
+    const token = localStorage.getItem('token')
+
+    useEffect(() => {
+      if (token) {
+        try {
+          // Fetch user information using the token
+          axios
+            .get('http://localhost:5000/jwt', { headers: { 'Authorization': token } })
+            .then((res) => {
+              setUser(res.data.user);
+              console.log(res.data.user)
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (error) {
+          console.log(error);
         }
       }
+    }, [token]);
 
-      async function deleteCartProduct(productId) {
+    async function onQtyChange(e) {
+      if (e.target.value < 0) {
+        return 0;
+      } else if (e.target.value > product.quantity) {
+        return product.quantity;
+      } else {
         try {
-          const token = localStorage.getItem('token');
-          const response = await axios.delete('http://localhost:5000/cart/removeProduct', {
-            headers: { Authorization: token },
-            data: { productId: productId },
-          });
-      
-          if (response.status === 204) {
-            props.refreshCart(); // Removed successfully
+          const newQty = e.target.value;
+          const response = await axios.patch(
+            'http://localhost:5000/cart/updateQty',
+            {
+              cartId: cartId,
+              newQty: newQty,
+            },
+            {
+              headers: {
+                'Authorization': token,
+              },
+            }
+          );
+        
+          if (response.status === 200) {
+            setQty(newQty);
+            props.updateQty(newQty);
           } else {
-            console.log('Something went wrong on product deletion');
+            console.log('Something went wrong on product quantity update');
+          }
+        } catch (error) {
+          console.log('Error updating product quantity:', error);
+        }
+        
+      }
+    }
+    
+    
+
+      async function deleteCartProduct() {
+        try {
+          if(user){
+            const response = await axios.delete('http://localhost:5000/cart/removeProduct', {
+              headers: { 'Authorization': token },
+              data: { cartId },
+            });
+            if (response.status === 204) {
+              props.refreshCart(); // Removed successfully
+            } else {
+              console.log('Something went wrong on product deletion');
+            }
           }
         } catch (error) {
           console.error('Error removing product from the cart:', error);
@@ -60,7 +107,7 @@ const CartProduct = (props) => {
             <h2>${product.price * qty}</h2>
         </Col>
         <Col xs={2}>
-            <Button onClick={()=>deleteCartProduct(product._id)}><FaTrash/></Button>
+            <Button onClick={()=>deleteCartProduct()}><FaTrash/></Button>
             
         </Col>
     </Row>
